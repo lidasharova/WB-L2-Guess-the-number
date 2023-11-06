@@ -13,16 +13,19 @@
   <div class="container">
     <header class="header">
       <h1 class="title">Угадай число</h1>
-      <h3 class="subtitle">Компьютер выбрал число в диапазоне от 1 до 100! Попробуй угадать прямо сейчас!</h3>
+      <h3 class="subtitle">Компьютер выбрал число в диапазоне от 1 до 100!
+        Попробуй угадать прямо сейчас!</h3>
       <span>или</span>
     </header>
 
     <main class="main">
-      <p>установите свой диапазон для загаданного числа!</p>
+      <p>установи свой диапазон для загаданного числа</p>
       <div class="range-container">
-        <input type="number" class="range-input" id="min" min="1" max="1000" placeholder="min">
-        <span> - </span>
-        <input type="number" class="range-input" id="max" min="1" max="1000" placeholder="max">
+        <div class="range-inputs">
+          <input type="number" class="range-input" id="min" min="1" max="1000" placeholder="min">
+          <span> - </span>
+          <input type="number" class="range-input" id="max" min="1" max="1000" placeholder="max">
+        </div>
         <button class="user-range-btn">Начать игру с моим диапазоном</button>
       </div>
       <input type="number" class="guess-input" placeholder="Введите число">
