@@ -21,42 +21,47 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const guessNumber = () => {
     const userGuess = parseInt(guessInput.value);
-    if (userGuess < minNumber || userGuess > maxNumber) {
-      message.style.color = '#a6aef2';
-      message.textContent = `Пожалуйста, введите число от ${minNumber} до ${maxNumber}.`;
-    } else {
-      attempts++;
-      attemptsDisplay.textContent = attempts;
-      const result = checkGuess(userGuess);
-      if (result === 0) {
-        message.style.color = 'lightgreen';
-        message.textContent = `Поздравляю! Вы угадали число ${secretNumber} за ${getWordFromNumber(
-          attempts,
-          ['попытку', 'попытки', 'попыток']
-        )}!`;
-        startAnimationWin();
-        guessBtn.disabled = true;
-        guessInput.disabled = true;
-      } else if (attempts % 3 === 0) {
-        hints++;
-        hintsDisplay.textContent = hints;
+    if (!isNaN(userGuess)) {
+      if (userGuess < minNumber || userGuess > maxNumber) {
         message.style.color = '#a6aef2';
-        message.textContent = `Загаданное число является ${
-          secretNumber % 2 === 0 ? 'четным' : 'нечетным'
-        }.`;
-      } else if (attempts >= 15) {
-        setGameOver();
+        message.textContent = `Пожалуйста, введите число от ${minNumber} до ${maxNumber}.`;
       } else {
-        hints++;
-        hintsDisplay.textContent = hints;
-        message.style.color = '#f7968b';
-        message.textContent =
-          userGuess > secretNumber
-            ? 'Загаданное число меньше.'
-            : 'Загаданное число больше.';
+        attempts++;
+        attemptsDisplay.textContent = attempts;
+        const result = checkGuess(userGuess);
+        if (result === 0) {
+          message.style.color = 'lightgreen';
+          message.textContent = `Поздравляю! Вы угадали число ${secretNumber} за ${getWordFromNumber(
+            attempts,
+            ['попытку', 'попытки', 'попыток']
+          )}!`;
+          startAnimationWin();
+          guessBtn.disabled = true;
+          guessInput.disabled = true;
+        } else if (attempts % 3 === 0) {
+          hints++;
+          hintsDisplay.textContent = hints;
+          message.style.color = '#a6aef2';
+          message.textContent = `Загаданное число является ${
+            secretNumber % 2 === 0 ? 'четным' : 'нечетным'
+          }.`;
+        } else if (attempts >= 15) {
+          setGameOver();
+        } else {
+          hints++;
+          hintsDisplay.textContent = hints;
+          message.style.color = '#f7968b';
+          message.textContent =
+            userGuess > secretNumber
+              ? 'Загаданное число меньше.'
+              : 'Загаданное число больше.';
+        }
       }
+      guessInput.value = '';
+    } else {
+      message.style.color = '#a6aef2';
+      message.textContent = 'Пожалуйста, введите число.';
     }
-    guessInput.value = '';
   };
 
   const restartGame = () => {
@@ -89,7 +94,8 @@ document.addEventListener('DOMContentLoaded', function () {
   const setGameOver = () => {
     guessInput.disabled = true;
     guessBtn.disabled = true;
-    hintsDisplay.textContent = 'Вы проиграли!';
+    message.style.color = '#f7968b';
+    message.textContent = 'Вы проиграли!';
   };
 
   restartBtn.addEventListener('click', restartGame);
