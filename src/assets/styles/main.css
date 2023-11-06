@@ -186,13 +186,20 @@ span {
 }
 
 @media (max-width: 500px) {
+  .main {
+    display: none;
+  }
+  .p {
+    margin: 0 5px;
+    margin-bottom: 10px;
+  }
   .range-container {
-    margin-bottom: 30px;
+    margin-bottom: 18px;
     display: flex;
     flex-direction: column;
   }
   .user-range-btn {
-    margin-top: 20px;
+    margin-top: 13px;
     margin-left: 0;
   }
   .guess-input {

@@ -2,7 +2,7 @@
 
 ### Игра "Угадай число"
 
-## [deploy](https://guess-the-number.netlify.app/)
+## [deploy](https://lida-sharova-guess-the-number.netlify.app/)
 
 #### Стек:
 

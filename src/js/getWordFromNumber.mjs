@@ -8,4 +8,3 @@ export const getWordFromNumber = (number, textForms) => {
   }
 };
 
-// textForms - это массив со словами в форме -  [Им.п ед, Род.п ед, Род.п множ]

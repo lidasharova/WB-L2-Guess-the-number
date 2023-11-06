@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function () {
         message.style.color = 'lightgreen';
         message.textContent = `Поздравляю! Вы угадали число ${secretNumber} за ${getWordFromNumber(
           attempts,
-          ['попытка', 'попытки', 'попыток']
+          ['попытку', 'попытки', 'попыток']
         )}!`;
         startAnimationWin();
         guessBtn.disabled = true;
