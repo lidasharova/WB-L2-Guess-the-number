@@ -14,7 +14,7 @@
 
 1. Клонируйте репозиторий проекта с помощью Git:
    ```bash
-   $ git clone https://github.com/lidasharova/WB-L2-Tic-tac-toe.git
+   $ git clone https://github.com/lidasharova/WB-L2-Guess-the-number.git
    ```
 2. Перейдите в каталог проекта (папка src):
    ```bash

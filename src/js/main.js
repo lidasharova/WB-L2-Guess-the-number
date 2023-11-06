@@ -1,155 +1,103 @@
-const boardContainer = document.querySelector('.board-container');
-const messageContainer = document.querySelector('.message-container');
-const saveGameBtn = document.querySelector('.save-game-btn');
-const newGameBtns = document.querySelectorAll('.new-game-btn');
-const popup = document.querySelector('.popup');
-const popupMessage = document.querySelector('.popup-message');
-const newGameBtnPopup = document.querySelector('.popup .new-game-btn');
+import { generateRandomNumber } from './generateRandomNumber.mjs';
+import { getWordFromNumber } from './getWordFromNumber.mjs';
+import { startAnimationWin } from './startAnimationWin.mjs';
 
-let cells = [];
-let board = ['', '', '', '', '', '', '', '', ''];
-let currentPlayer = 'X';
-let gameFinished = false;
+document.addEventListener('DOMContentLoaded', function () {
+  let minNumber = 1;
+  let maxNumber = 100;
+  let secretNumber = generateRandomNumber(minNumber, maxNumber);
+  let attempts = 0;
+  let hints = 0;
 
-// отрисовка поля
-const renderBoard = () => {
-  boardContainer.innerHTML = '';
-  board.forEach((cell, index) => {
-    const cellElement = document.createElement('div');
-    cellElement.classList.add('cell');
-    cellElement.textContent = cell;
-    cellElement.addEventListener('click', () => makeMove(index));
-    boardContainer.appendChild(cellElement);
-  });
-};
+  const guessInput = document.querySelector('.guess-input');
+  const guessBtn = document.querySelector('.guess-btn');
+  const message = document.querySelector('.message');
+  const attemptsDisplay = document.querySelector('.attempts');
+  const hintsDisplay = document.querySelector('.hints');
+  const restartBtn = document.querySelector('.restart-btn');
+  const rangeInputMin = document.getElementById('min');
+  const rangeInputMax = document.getElementById('max');
+  const setUserRangeBtn = document.querySelector('.user-range-btn');
 
-const showMessage = (text) => {
-  messageContainer.textContent = text;
-};
-
-const hideMessage = () => {
-  messageContainer.textContent = '';
-};
-
-const showPopup = (message) => {
-  popupMessage.textContent = message;
-  popup.style.display = 'flex';
-};
-
-const hidePopup = () => {
-  popup.style.display = 'none';
-};
-
-// создание конфети и анимация после выигрыша
-const createConfetti = () => {
-  const confetti = document.createElement('div');
-  confetti.classList.add('confetti');
-  confetti.style.left = Math.random() * 100 + '%';
-  confetti.style.animationDuration = Math.random() * 3 + 2 + 's';
-  confetti.style.opacity = Math.random();
-  document.body.appendChild(confetti);
-  setTimeout(() => {
-    document.body.removeChild(confetti);
-  }, 2000);
-};
-const playWinAnimation = () => {
-  for (let i = 0; i < 60; i++) {
-    setTimeout(createConfetti, i * 60);
-  }
-};
-
-// ф-ция загрузки игры из localStorage
-const loadGame = () => {
-  const savedGame = localStorage.getItem('ticTacToeGame');
-  if (savedGame) {
-    hidePopup();
-    board = JSON.parse(savedGame);
-    renderBoard();
-    checkWin();
-  } else {
-    showPopup('Start a new game!');
-    renderBoard();
-  }
-};
-
-// загрузка игры из localStorage
-loadGame();
-
-// сохранение игры в localStorage
-const saveGame = () => {
-  localStorage.setItem('ticTacToeGame', JSON.stringify(board));
-  showMessage('Game saved!');
-};
-
-// ф-ции для выделения/очистки выигрышной комбинации
-function highlightWinningCombo(combo) {
-  cells = document.querySelectorAll('.cell');
-  combo.forEach((index) => {
-    cells[index].classList.add('winning');
-  });
-}
-
-function clearWinningCombo() {
-  cells = document.querySelectorAll('.cell');
-  cells.forEach((cell) => {
-    cell.classList.remove('winning');
-  });
-}
-
-// ф-ция для проверки наличия выигрышной комбинации
-function checkWin() {
-  const winningCombos = [
-    // Горизонтальные комбинации
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    // Вертикальные комбинации
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    // Диагональные комбинации
-    [0, 4, 8],
-    [2, 4, 6],
-  ];
-  for (const combo of winningCombos) {
-    const [a, b, c] = combo;
-    if (board[a] && board[a] === board[b] && board[a] === board[c]) {
-      highlightWinningCombo(combo);
-      showMessage(`The player ${board[a]} - won!`);
-      playWinAnimation();
-      gameFinished = true;
+  const guessNumber = () => {
+    const userGuess = parseInt(guessInput.value);
+    if (userGuess < minNumber || userGuess > maxNumber) {
+      message.style.color = '#a6aef2';
+      message.textContent = `Пожалуйста, введите число от ${minNumber} до ${maxNumber}.`;
+    } else {
+      attempts++;
+      attemptsDisplay.textContent = attempts;
+      const result = checkGuess(userGuess);
+      if (result === 0) {
+        message.style.color = 'lightgreen';
+        message.textContent = `Поздравляю! Вы угадали число ${secretNumber} за ${getWordFromNumber(
+          attempts,
+          ['попытка', 'попытки', 'попыток']
+        )}!`;
+        startAnimationWin();
+        guessBtn.disabled = true;
+        guessInput.disabled = true;
+      } else if (attempts % 3 === 0) {
+        hints++;
+        hintsDisplay.textContent = hints;
+        message.style.color = '#a6aef2';
+        message.textContent = `Загаданное число является ${
+          secretNumber % 2 === 0 ? 'четным' : 'нечетным'
+        }.`;
+      } else if (attempts >= 15) {
+        setGameOver();
+      } else {
+        hints++;
+        hintsDisplay.textContent = hints;
+        message.style.color = '#f7968b';
+        message.textContent =
+          userGuess > secretNumber
+            ? 'Загаданное число меньше.'
+            : 'Загаданное число больше.';
+      }
     }
-  }
-  // проверка на ничью
-  if (!board.includes('')) {
-    showMessage('Draw!!');
-    clearWinningCombo();
-    playWinAnimation();
-    gameFinished = true;
-  }
-}
+    guessInput.value = '';
+  };
 
-function makeMove(index) {
-  if (gameFinished) return;
-  if (!board[index]) {
-    board[index] = currentPlayer;
-    currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-    renderBoard();
-    checkWin();
-  }
-}
+  const restartGame = () => {
+    secretNumber = generateRandomNumber(minNumber, maxNumber);
+    attempts = 0;
+    hints = 0;
+    attemptsDisplay.textContent = attempts;
+    hintsDisplay.textContent = hints;
+    message.textContent = '';
+    guessBtn.disabled = false;
+    guessInput.disabled = false;
+    guessInput.value = '';
+  };
 
-const newGame = () => {
-  hidePopup();
-  board = ['', '', '', '', '', '', '', '', ''];
-  currentPlayer = 'X';
-  renderBoard();
-  hideMessage();
-  gameFinished = false;
-};
+  const setNewRange = () => {
+    if (rangeInputMin.value && rangeInputMax.value) {
+      minNumber = parseInt(rangeInputMin.value);
+      maxNumber = parseInt(rangeInputMax.value);
+      restartGame();
+    } else {
+      message.textContent =
+        'Выберите минимальное и максимальное число диапазона';
+    }
+  };
 
-newGameBtns.forEach((btn) => {
-  btn.addEventListener('click', newGame);
+  const checkGuess = (guess) => {
+    return guess - secretNumber;
+  };
+
+  const setGameOver = () => {
+    guessInput.disabled = true;
+    guessBtn.disabled = true;
+    hintsDisplay.textContent = 'Вы проиграли!';
+  };
+
+  restartBtn.addEventListener('click', restartGame);
+  setUserRangeBtn.addEventListener('click', setNewRange);
+  guessBtn.addEventListener('click', guessNumber);
+  guessInput.addEventListener('keydown', function (event) {
+    if (event.key === 'Enter') {
+      guessNumber();
+    }
+  });
 });
-newGameBtnPopup.addEventListener('click', newGame);
-saveGameBtn.addEventListener('click', saveGame);

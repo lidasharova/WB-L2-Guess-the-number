@@ -6,29 +6,32 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mems generator</title>
   <link rel="stylesheet" href="./assets/styles/main.css">
-  <link rel="icon" href="./assets/favicon/favicon.png">
+  <link rel="icon" type="image/png" href="./assets/favicon/favicon.png">
 </head>
 
 <body>
   <div class="container">
+    <header class="header">
+      <h1 class="title">Угадай число</h1>
+      <h3 class="subtitle">Компьютер выбрал число в диапазоне от 1 до 100! Попробуй угадать прямо сейчас!</h3>
+      <span>или</span>
+    </header>
 
-    <body>
-      <header class="header">
-        <h1 class="title">Guess the number</h1>
-      </header>
-      <main class="main">
-        <div class="board">
-          
-        </div>
-        <button class="save-game-btn">Save game</button>
-        <button class="new-game-btn">New game</button>
-        <div class="popup">
-          <div class="popup-content">
-            <p class="popup-message"></p>
-            <button class="new-game-btn">New game</button>
-          </div>
-        </div>
-      </main>
+    <main class="main">
+      <p>установите свой диапазон для загаданного числа!</p>
+      <div class="range-container">
+        <input type="number" class="range-input" id="min" min="1" max="1000" placeholder="min">
+        <span> - </span>
+        <input type="number" class="range-input" id="max" min="1" max="1000" placeholder="max">
+        <button class="user-range-btn">Начать игру с моим диапазоном</button>
+      </div>
+      <input type="number" class="guess-input" placeholder="Введите число">
+      <button class="guess-btn">Угадать!</button>
+      <p class="message"></p>
+      <p>Попыток: <span class="attempts">0</span></p>
+      <p>Подсказок: <span class="hints">0</span></p>
+      <button class="restart-btn">Новая игра</button>
+    </main>
   </div>
   <script type="module" src="/js/main.js"></script>
 </body>
